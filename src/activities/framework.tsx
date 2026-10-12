@@ -101,6 +101,8 @@ export interface ChoiceRound {
   open?: boolean;
   /** set false when the visual plays its own audio on arrival (e.g. blending demo) */
   autoplay?: boolean;
+  /** the sound or word to listen for; shown as a big replay button */
+  listen?: Part[];
 }
 
 export type ChoiceVariant = "grid" | "thumbs" | "bubbles" | "monster" | "drum" | "list" | "row";
@@ -179,10 +181,22 @@ export function ChoiceRounds({ rounds, onDone, variant = "grid", item = (r) => r
     <ActivityFrame instruction={round.prompt} total={rounds.length} done={index + (solved ? 1 : 0)} onSkip={onSkip} mood={solved ? "cheer" : attempts ? "think" : "happy"}>
       {round.visual && <div className="flex justify-center">{round.visual}</div>}
 
-      {variant === "monster" && (
-        <div className="flex justify-center" aria-hidden="true">
-          <span key={chomp} className={`emoji text-8xl ${chomp ? "anim-chomp" : ""}`}>{solved ? "😋" : "👾"}</span>
+      {variant === "monster" ? (
+        <div className="flex items-center justify-center gap-3">
+          <span key={chomp} className={`emoji text-8xl ${chomp ? "anim-chomp" : ""}`} aria-hidden="true">{solved ? "😋" : "👾"}</span>
+          {round.listen && (
+            <div className="relative rounded-blob bg-white px-4 py-3 shadow-popsm">
+              <span className="absolute -left-2 top-1/2 h-4 w-4 -translate-y-1/2 rotate-45 bg-white" aria-hidden="true" />
+              <SpeakerButton parts={round.listen} label="Hear what the monster wants again" slowButton />
+            </div>
+          )}
         </div>
+      ) : (
+        round.listen && !round.visual && (
+          <div className="flex justify-center">
+            <SpeakerButton parts={round.listen} label="Hear it again" slowButton />
+          </div>
+        )
       )}
 
       {variant === "bubbles" ? (

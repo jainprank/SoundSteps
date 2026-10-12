@@ -1,3 +1,4 @@
+import { CHILD_NAME } from "./child";
 import { CORR_BY_ID, GROUPS } from "./correspondences";
 import { PHONEME_BY_ID } from "./phonemes";
 import { L5_SENTENCES, L7_SENTENCES, STORIES } from "./reading";
@@ -128,7 +129,7 @@ function level0(): Level {
   return {
     id: 0, title: "Meet the Sounds", short: "Listen", icon: "👂", color: "rose",
     goal: "Tune in to sounds and notice that spoken words are made of sounds.",
-    intro: "Welcome to Sound Land! Let's switch on our listening ears.",
+    intro: `Welcome ${CHILD_NAME} to SoundSteps! Let's switch on our listening ears.`,
     units: [
       {
         title: "Listening ears",

@@ -131,7 +131,7 @@ export function HearSound({ step, onDone }: ActivityProps<"hearSound">) {
         step.variant === "monster" ? [K.phrase("feed-sound"), K.phoneme(ph)]
           : step.variant === "bubbles" ? [K.phrase("pop-the"), K.phoneme(ph)]
             : [K.phrase("which-letter"), { pause: 200 }, K.phoneme(ph)];
-      return { id: `ph:${ph}`, prompt, options: opts.map(graphemeOption), correct: corr, hint: soundHint(corr), after: soundHint(corr) };
+      return { id: `ph:${ph}`, prompt, listen: [K.phoneme(ph)], options: opts.map(graphemeOption), correct: corr, hint: soundHint(corr), after: soundHint(corr) };
     });
   }, [step]);
   return <ChoiceRounds rounds={rounds} onDone={onDone} variant={step.variant ?? "grid"} />;
@@ -147,6 +147,7 @@ export function FeedWords({ step, onDone }: ActivityProps<"feedWords">) {
       return {
         id: `w:${w}`,
         prompt: [K.phrase(step.variant === "monster" ? "feed-word" : "which-word"), K.word(w)],
+        listen: [K.word(w)],
         options: shuffle([w, ...others]).map(wordOption),
         correct: w,
         hint: [K.word(w)],
@@ -255,6 +256,7 @@ export function ListenSelect({ step, onDone }: ActivityProps<"listenSelect">) {
     prioritise(step.words, (w) => `t:${w}`).map((w) => ({
       id: `t:${w}`,
       prompt: [K.phrase("which-word"), K.word(w)],
+      listen: [K.word(w)],
       options: shuffle([w, ...sample(step.pool.filter((p) => p !== w), choiceCount(3) - 1)]).map(wordOption),
       correct: w,
       hint: [K.word(w)],
