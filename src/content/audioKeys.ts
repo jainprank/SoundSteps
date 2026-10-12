@@ -79,9 +79,16 @@ export function speechEntries(_accent: Accent): SpeechEntry[] {
   return [...out.values()];
 }
 
-/** "A." — a lone capital with a full stop makes every voice say the letter's name. */
+/**
+ * "A." — a lone capital with a full stop makes the voices say the letter's name.
+ * Exceptions are spelled out where a voice misreads the capital (the Indian
+ * English voice reads "S." as two syllables).
+ */
+const LETTER_NAME_OVERRIDES: Record<string, string> = { S: "ess" };
+
 function letterNameText(letter: string) {
-  return `${letter.toUpperCase()}.`;
+  const l = letter.toUpperCase();
+  return LETTER_NAME_OVERRIDES[l] ?? `${l}.`;
 }
 
 function capitalise(s: string) {
