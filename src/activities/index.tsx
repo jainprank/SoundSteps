@@ -1,6 +1,7 @@
 import { useState, type ComponentType } from "react";
 import type { Step } from "@/content/curriculum";
 import { K } from "@/content/audioKeys";
+import { CHILD_NAME } from "@/content/child";
 import { audio } from "@/lib/audio";
 import { Confetti } from "@/components/Celebration";
 import { Button } from "@/components/ui";
@@ -93,7 +94,7 @@ function TreasureHunt({ step, ctx, onDone }: ActivityProps<"treasureHunt">) {
         {map}
         <div className="card flex flex-col items-center gap-4 p-8 text-center">
           <span className="emoji anim-pop text-9xl">💰</span>
-          <p className="font-display text-3xl">You found the treasure!</p>
+          <p className="font-display text-3xl">You found the treasure, {CHILD_NAME}!</p>
           <Button onClick={() => onDone(score)}>Hooray! ▶</Button>
         </div>
       </ActivityFrame>

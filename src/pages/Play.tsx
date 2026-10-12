@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { STORIES, STORY_BY_ID } from "@/content/reading";
 import type { Step } from "@/content/curriculum";
@@ -6,7 +6,12 @@ import { GAMES, GAME_BY_ID, dailyChallenge } from "@/lib/games";
 import { taughtCorrs, taughtTricky, useProgress } from "@/lib/progress";
 import type { ActivityCtx } from "@/activities/framework";
 import { Celebration } from "@/components/Celebration";
-import { TopBar } from "@/components/ui";
+import { Button, TopBar } from "@/components/ui";
+import { Guide } from "@/components/Guide";
+import { CHILD_NAME } from "@/content/child";
+import { K } from "@/content/audioKeys";
+import type { PhraseId } from "@/content/phrases";
+import { audio } from "@/lib/audio";
 import { StepRunner } from "./LessonPage";
 import { NotFound } from "./NotFound";
 
@@ -49,10 +54,26 @@ export function Games() {
   );
 }
 
-function Runner({ title, back, make }: { title: string; back: string; make: () => Step[] | null }) {
+/** A short hello from Pip before an activity starts. */
+function Greeting({ phrase, text, onStart }: { phrase: PhraseId; text: string; onStart: () => void }) {
+  useEffect(() => {
+    void audio.play([K.phrase(phrase)]);
+    return () => audio.stop();
+  }, [phrase]);
+  return (
+    <main className="anim-pop mx-auto flex max-w-lg flex-col items-center gap-5 px-4 py-10 text-center">
+      <Guide size={140} onClick={() => void audio.play([K.phrase(phrase)])} label="Pip: hear the greeting again" />
+      <p className="font-display text-3xl">{text}</p>
+      <Button onClick={onStart} autoFocus>Let's go! ▶</Button>
+    </main>
+  );
+}
+
+function Runner({ title, back, make, greeting }: { title: string; back: string; make: () => Step[] | null; greeting?: { phrase: PhraseId; text: string } }) {
   const ctx = useCtx();
   const navigate = useNavigate();
   const [run, setRun] = useState(0);
+  const [started, setStarted] = useState(!greeting);
   const steps = useMemo(make, [run]); // eslint-disable-line react-hooks/exhaustive-deps
   const [score, setScore] = useState<number | null>(null);
   if (!steps) {
@@ -67,7 +88,15 @@ function Runner({ title, back, make }: { title: string; back: string; make: () =
     return (
       <>
         <TopBar title={title} back={back} />
-        <Celebration title="Great playing!" phrase="lesson-done" stars={score >= 0.9 ? 3 : score >= 0.6 ? 2 : 1} onAgain={() => { setScore(null); setRun(run + 1); }} nextLabel="Done" onNext={() => navigate(back)} />
+        <Celebration title={`Great playing, ${CHILD_NAME}!`} phrase="lesson-done" stars={score >= 0.9 ? 3 : score >= 0.6 ? 2 : 1} onAgain={() => { setScore(null); setRun(run + 1); }} nextLabel="Done" onNext={() => navigate(back)} />
+      </>
+    );
+  }
+  if (!started && greeting) {
+    return (
+      <>
+        <TopBar title={title} back={back} />
+        <Greeting phrase={greeting.phrase} text={greeting.text} onStart={() => setStarted(true)} />
       </>
     );
   }
@@ -94,7 +123,7 @@ export function GamePage() {
 
 export function Daily() {
   const { progress } = useProgress();
-  return <Runner title="Daily Challenge" back="/" make={() => dailyChallenge(taughtCorrs(progress), taughtTricky(progress), progress.recent)} />;
+  return <Runner title="Daily Challenge" back="/" greeting={{ phrase: "daily-hello", text: `Hello ${CHILD_NAME}! Here's today's little challenge.` }} make={() => dailyChallenge(taughtCorrs(progress), taughtTricky(progress), progress.recent)} />;
 }
 
 export function Stories() {

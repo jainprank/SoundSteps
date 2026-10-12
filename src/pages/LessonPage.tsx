@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { LESSON_BY_ID, LEVELS, levelLessons, type Step } from "@/content/curriculum";
 import { K } from "@/content/audioKeys";
+import { CHILD_NAME } from "@/content/child";
 import { Activity } from "@/activities";
 import type { ActivityCtx, ActivityResult } from "@/activities/framework";
 import { audio } from "@/lib/audio";
@@ -73,7 +74,7 @@ export function LessonPage() {
       return (
         <>
           <TopBar title={lesson.title} back={`/level/${level.id}`} />
-          <Celebration title="Good work!" phrase="check-practise" onAgain={() => { setResult(null); setRun(run + 1); }} nextLabel="Back to the level" onNext={() => navigate(`/level/${level.id}`)}>
+          <Celebration title={`Good work, ${CHILD_NAME}!`} phrase="check-practise" onAgain={() => { setResult(null); setRun(run + 1); }} nextLabel="Back to the level" onNext={() => navigate(`/level/${level.id}`)}>
             <p className="max-w-sm text-lg">Practising makes sounds stronger. Try the activities again, then have another go!</p>
           </Celebration>
         </>
@@ -83,7 +84,7 @@ export function LessonPage() {
       <>
         <TopBar title={lesson.title} back={`/level/${level.id}`} />
         <Celebration
-          title={levelDone ? `${level.title} complete!` : "You did it!"}
+          title={levelDone ? `${level.title} complete, ${CHILD_NAME}!` : `You did it, ${CHILD_NAME}!`}
           phrase={levelDone ? "level-done" : isCheck ? "check-pass" : "lesson-done"}
           stars={stars}
           onAgain={() => { setResult(null); setRun(run + 1); }}

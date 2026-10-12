@@ -21,7 +21,7 @@ async function setup(page: Page, settings: Record<string, unknown> = {}) {
   return errors;
 }
 
-const NEXT_BUTTONS = /^(Next ▶|Done ▶|The end ▶|Let's read! ▶|I told it! ▶|Hooray! ▶|Start the hunt ▶|I'm done ▶|Next ▶)$/;
+const NEXT_BUTTONS = /^(Next ▶|Done ▶|The end ▶|Let's read! ▶|I told it! ▶|Hooray! ▶|Start the hunt ▶|I'm done ▶|Let's go! ▶|Next ▶)$/;
 
 /** Do one sensible thing on the screen. Returns a description, or null if nothing to do. */
 async function act(page: Page): Promise<string | null> {

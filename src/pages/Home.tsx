@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { LEVELS, levelLessons } from "@/content/curriculum";
 import { K } from "@/content/audioKeys";
+import { CHILD_NAME } from "@/content/child";
 import { audio } from "@/lib/audio";
 import { hasAnyProgress, levelState, nextLesson, useProgress } from "@/lib/progress";
 import { Guide } from "@/components/Guide";
@@ -37,6 +38,7 @@ export function Home() {
           <Link to="/grown-ups" className="rounded-full bg-white px-4 py-3 font-display text-base shadow-popsm">For grown-ups</Link>
         </div>
         <Guide size={130} onClick={() => void audio.play([K.phrase("welcome")])} label="Pip the fox says hello. Tap to hear." />
+        <p className="font-display text-3xl">Hi {CHILD_NAME}! 👋</p>
         <h1 className="font-display text-5xl font-semibold text-coral-dark sm:text-6xl">SoundSteps</h1>
         <p className="font-display text-xl sm:text-2xl">Hear it. Say it. Blend it. Read it!</p>
         <div className="mt-2 flex flex-wrap justify-center gap-3">

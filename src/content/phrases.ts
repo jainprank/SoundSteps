@@ -1,9 +1,11 @@
 // Every sentence the guide (Pip the fox) says. Keys become audio files p/<key>.
 // Keep instructions short: children listen, they do not read them.
 
+import { CHILD_NAME as N } from "./child";
+
 export const PHRASES = {
   // general
-  welcome: "Hi! I'm Pip. Let's learn to read with sounds!",
+  welcome: `Hi ${N}! I'm Pip. Let's learn to read with sounds!`,
   "lets-go": "Let's go!",
   "tap-to-hear": "Tap me to hear it again.",
   "your-turn": "Your turn! Say it out loud.",
@@ -71,26 +73,26 @@ export const PHRASES = {
   "vocab-time": "Here are some new words from the story.",
   "retell": "Tell a grown-up what happened in the story. You can draw or write it too!",
   "treasure-start": "Solve the clues to find the treasure!",
-  "treasure-found": "You found the treasure!",
-  "daily-hello": "Here's today's little challenge. Let's warm up our sounds!",
+  "treasure-found": `You found the treasure, ${N}!`,
+  "daily-hello": `Hello ${N}! Here's today's little challenge. Let's warm up our sounds!`,
   "real-or-silly": "Read the word. Is it a real word, or a silly alien word?",
   // feedback (positive / supportive only)
-  "correct-1": "Well done!",
+  "correct-1": `Well done, ${N}!`,
   "correct-2": "Brilliant!",
-  "correct-3": "Super listening!",
+  "correct-3": `Super listening, ${N}!`,
   "correct-4": "You got it!",
-  "correct-5": "Fantastic!",
+  "correct-5": `Fantastic, ${N}!`,
   "correct-6": "Great job!",
-  "retry-1": "Let's try that sound together!",
+  "retry-1": `Let's try that sound together, ${N}!`,
   "retry-2": "Good try! Listen again.",
   "retry-3": "Nearly! Let's look closely.",
   "show-me": "Let's find it together. Tap the glowing one.",
   "the-answer-is": "It's",
-  "lesson-done": "You did it! Hooray!",
-  "check-pass": "Amazing! You're ready for the next step!",
-  "check-practise": "Good work! Let's practise a little more, then try again.",
-  "level-done": "You finished the whole level! You're a super reader!",
-  "your-ideas": "Great thinking! There's no wrong answer.",
+  "lesson-done": `You did it, ${N}! Hooray!`,
+  "check-pass": `Amazing, ${N}! You're ready for the next step!`,
+  "check-practise": `Good work, ${N}! Let's practise a little more, then try again.`,
+  "level-done": `You finished the whole level, ${N}! You're a super reader!`,
+  "your-ideas": `Great thinking, ${N}! There's no wrong answer.`,
 } as const;
 
 export type PhraseId = keyof typeof PHRASES;
