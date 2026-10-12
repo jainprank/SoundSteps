@@ -143,7 +143,7 @@ export function GrownUps() {
 
         <section className="card p-6">
           <h2 className="mb-2 font-display text-3xl">About the voices</h2>
-          <p>Sounds and words were made with text-to-speech voices. Each isolated sound was cut from a real word so it stays crisp. You can check every sound on the <Link className="underline" to="/grown-ups/sounds">sound check page</Link>. If a recording is missing, SoundSteps uses your device's own voice and shows the words on screen.</p>
+          <p>The Indian English voice is a calm, friendly custom voice. The British and American voices are text-to-speech. Each isolated sound was cut from a real word in the same voice, so it stays crisp. You can check every sound on the <Link className="underline" to="/grown-ups/sounds">sound check page</Link>. If a recording is missing, SoundSteps uses your device's own voice and shows the words on screen.</p>
         </section>
       </main>
     </>

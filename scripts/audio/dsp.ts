@@ -25,7 +25,9 @@ export function readWav(path: string): Clip {
       bits = b.readUInt16LE(off + 22);
     } else if (id === "data") {
       if (bits !== 16) throw new Error(`${path}: expected 16-bit PCM`);
-      const n = Math.floor(size / 2 / channels);
+      // streamed WAVs may give a placeholder or slightly wrong length: trust the file
+      const bytes = Math.min(size, b.length - (off + 8));
+      const n = Math.floor(bytes / 2 / channels);
       const x = new Float32Array(n);
       for (let i = 0; i < n; i++) x[i] = b.readInt16LE(off + 8 + i * 2 * channels) / 32768;
       return { sr, x };
@@ -87,12 +89,12 @@ export function frames(clip: Clip): Frame[] {
   return out;
 }
 
-const FRIC_ZCR = 3000;
+const FRIC_ZCR = 3500;
 
 function stats(f: Frame[]) {
   const max = Math.max(...f.map((x) => x.rms));
   const silent = (x: Frame) => x.rms < max * 0.04;
-  const fric = (x: Frame) => !silent(x) && x.zcr > FRIC_ZCR;
+  const fric = (x: Frame) => !silent(x) && x.zcr > FRIC_ZCR && x.low < 0.2;
   const strongVoiced = (x: Frame, level: number) => x.rms > max * level && x.zcr < FRIC_ZCR * 0.8;
   return { max, silent, fric, strongVoiced };
 }
@@ -236,11 +238,15 @@ export function carve(word: Clip, recipe: Exclude<CarveRecipe, { kind: "concat" 
 
   switch (recipe.kind) {
     case "fricativeStart": {
-      // take the hiss up to where the voice comes in
+      // find where the voice comes in, then walk back through the hiss; this skips any
+      // breath or click some voices put before the word
       let end = onset;
-      while (end < f.length && !strongVoiced(f[end], 0.3) && end - onset < maxFrames(350)) end++;
+      while (end < f.length && !strongVoiced(f[end], 0.3) && end - onset < maxFrames(600)) end++;
+      let start = end - 1;
+      while (start > onset && (fric(f[start - 1]) || (start - 2 >= onset && fric(f[start - 2]))) && end - start < maxFrames(350)) start--;
+      if (end - start < 3) start = Math.max(onset, end - 8);
       // drop the first voicing transition frame
-      seg = slice(word, onset, Math.max(onset + 3, end - 1));
+      seg = slice(word, start, Math.max(start + 3, end - 1));
       seg = fade(seg, 8, 25);
       break;
     }
@@ -253,7 +259,7 @@ export function carve(word: Clip, recipe: Exclude<CarveRecipe, { kind: "concat" 
     case "stopStart": {
       let end = onset + 1;
       while (end < f.length && !strongVoiced(f[end], 0.3) && end - onset < maxFrames(120)) end++;
-      seg = slice(word, onset, Math.max(onset + 3, end));
+      seg = slice(word, onset, Math.max(onset + 4, end));
       seg = fade(seg, 2, 12);
       break;
     }
@@ -269,9 +275,13 @@ export function carve(word: Clip, recipe: Exclude<CarveRecipe, { kind: "concat" 
       break;
     }
     case "vowelStart": {
-      let end = onset + maxFrames(40);
-      while (end < f.length && !silent(f[end]) && !fric(f[end]) && f[end].rms > 0.25 * Math.max(...f.map((x) => x.rms))) end++;
-      seg = slice(word, onset, end);
+      // skip any breath before the vowel ("h-egg"): start at the first clearly voiced frame
+      const max = Math.max(...f.map((x) => x.rms));
+      let start = onset;
+      while (start < f.length - 1 && (fric(f[start]) || f[start].rms < 0.2 * max || f[start].zcr > FRIC_ZCR * 0.85)) start++;
+      let end = start + maxFrames(40);
+      while (end < f.length && !silent(f[end]) && !fric(f[end]) && f[end].rms > 0.25 * max) end++;
+      seg = slice(word, start, end);
       seg = fade(seg, 10, 35);
       break;
     }

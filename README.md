@@ -97,7 +97,14 @@ Then generate audio for the new text: `npm run audio`.
 
 ## Audio
 
-`npm run audio` uses the macOS text-to-speech voices **Rishi** (Indian English), **Daniel** (British) and **Samantha** (American), and `afconvert` for AAC encoding. Only new or changed text is regenerated. Output goes to `public/audio/<accent>/…m4a`, and timings go to `src/content/audio-manifest.json`.
+`npm run audio` generates every clip. Voices are set in `VOICES` in `scripts/audio/generate.ts`:
+
+- **Indian English (default):** Priyanka's custom voice on [Fish Audio](https://fish.audio) (free `s2.1-pro-free` model), set slightly slower for a calm, friendly tone.
+- **British:** macOS voice **Daniel**. **American:** macOS voice **Samantha**.
+
+Fish Audio needs an API key in a git-ignored `.env.local` file (`FISH_API_KEY=...`). Without a key, existing Fish clips are kept and any new clip falls back to the macOS voice **Rishi**. If the account has paid API credit, every Fish clip is also transcribed back with Fish speech-to-text to confirm it says the right word, and story word timings come from the transcript. Otherwise only free length checks run. Anything suspicious is listed in `scripts/audio/review-<accent>.txt`.
+
+Encoding uses macOS `afconvert`. Only new or changed text is regenerated. Output goes to `public/audio/<accent>/…m4a`, and timings go to `src/content/audio-manifest.json`.
 
 **Isolated phonemes.** These voices can't say a bare sound reliably: "sss" comes out as "ess ess ess". So each phoneme is **cut out of a real carrier word** (`scripts/audio/dsp.ts`). Hissy sounds come from the start of a word (/s/ from *sun*). Hums are cut where the low-frequency energy drops (/m/ from *map*). Stops are cut just before the vowel, so /t/ is crisp, not "tuh". /b/ /d/ /g/ start at the release burst, and vowels come from words like *at*, *up* and *eat*. Continuous sounds are time-stretched (WSOLA) so children can hear them clearly.
 
@@ -105,7 +112,7 @@ Then generate audio for the new text: `npm run audio`.
 
 **Replacing clips with recordings.** Put a WAV file at `recordings/<accent>/<key>.wav`, for example `recordings/in/ph/s.wav` for /s/ or `recordings/gb/w/ship.wav` for the word "ship", then run `npm run audio`. Recordings always take priority over generated clips.
 
-**Licensing.** The committed clips were produced with Apple's built-in voices. Check that the macOS software licence permits your intended distribution before publishing widely. For a large public launch, consider replacing the clips with human recordings (above) or a TTS service whose terms allow redistribution.
+**Licensing.** The Indian English clips use Priyanka's own Fish Audio voice. Check Fish Audio's terms for the plan used to generate them. The British and American clips were produced with Apple's built-in voices; check that the macOS software licence permits your intended distribution before publishing widely. For a large public launch, consider replacing the clips with human recordings (above) or a TTS service whose terms allow redistribution.
 
 **Fallbacks.** If a clip can't load, the app uses the device's own speech synthesis for words and sentences. Isolated sounds fall back to "s, as in sun" rather than a letter name. Captions always show what is being said, and muting keeps everything working.
 
