@@ -2,6 +2,8 @@
 
 **Hear it. Say it. Blend it. Read it!**
 
+**Live site:** https://jainprank.github.io/SoundSteps/
+
 SoundSteps is a free, interactive phonics website for children aged about 3–8. It teaches reading with systematic synthetic phonics: letter sounds → blending → segmenting → letter teams → tricky words → sentences → stories.
 
 - **No login, no sign-up, no ads, no payments.** It opens straight to the learning path.
