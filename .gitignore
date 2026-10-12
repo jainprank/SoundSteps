@@ -1,0 +1,10 @@
+node_modules
+dist
+dev-dist
+.audio-cache
+test-results
+playwright-report
+*.local
+.DS_Store
+.claude/
+*.tsbuildinfo

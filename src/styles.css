@@ -1,0 +1,83 @@
+@import "@fontsource/andika/400.css";
+@import "@fontsource/andika/700.css";
+@import "@fontsource/fredoka/500.css";
+@import "@fontsource/fredoka/600.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: #fff8ef;
+  color: #2b2340;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+body {
+  font-family: "Andika", ui-rounded, system-ui, sans-serif;
+  min-height: 100dvh;
+}
+
+/* Emoji pictures render consistently and large */
+.emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif;
+  line-height: 1;
+}
+
+:focus-visible {
+  outline: 4px solid #1f6fb2;
+  outline-offset: 3px;
+  border-radius: 1rem;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-blob px-6 py-3 font-display text-xl font-semibold shadow-pop transition active:translate-y-1 active:shadow-popsm disabled:opacity-50 disabled:active:translate-y-0;
+    min-height: 56px;
+  }
+  .btn-primary { @apply bg-coral text-white; }
+  .btn-sky { @apply bg-sky-dark text-white; }
+  .btn-mint { @apply bg-mint-dark text-white; }
+  .btn-soft { @apply bg-white text-ink; }
+  .card {
+    @apply rounded-blob bg-white shadow-pop;
+  }
+  .tile {
+    @apply flex select-none items-center justify-center rounded-3xl border-4 border-transparent bg-white font-read font-bold text-ink shadow-pop transition active:translate-y-1 active:shadow-popsm;
+  }
+}
+
+/* ── animations (all disabled for reduced motion) ── */
+@keyframes bob { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+@keyframes pop-in { 0% { transform: scale(0.6); opacity: 0 } 70% { transform: scale(1.08) } 100% { transform: scale(1); opacity: 1 } }
+@keyframes wiggle { 0%, 100% { transform: rotate(0) } 25% { transform: rotate(-4deg) } 75% { transform: rotate(4deg) } }
+@keyframes shake { 0%, 100% { transform: translateX(0) } 25% { transform: translateX(-6px) } 75% { transform: translateX(6px) } }
+@keyframes float-up { 0% { transform: translateY(0) } 50% { transform: translateY(-14px) } 100% { transform: translateY(0) } }
+@keyframes glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.9) } 50% { box-shadow: 0 0 0 12px rgba(255, 209, 102, 0) } }
+@keyframes confetti-fall { 0% { transform: translateY(-10vh) rotate(0) } 100% { transform: translateY(110vh) rotate(540deg) } }
+@keyframes talk { 0%, 100% { transform: scaleY(1) } 50% { transform: scaleY(0.4) } }
+@keyframes slide-together { from { letter-spacing: 0.6em } to { letter-spacing: 0 } }
+@keyframes chomp { 0%, 100% { transform: scale(1) } 30% { transform: scale(1.15, 0.85) } 60% { transform: scale(0.95, 1.05) } }
+
+.anim-bob { animation: bob 3s ease-in-out infinite; }
+.anim-pop { animation: pop-in 0.35s ease-out both; }
+.anim-wiggle { animation: wiggle 0.5s ease-in-out; }
+.anim-shake { animation: shake 0.35s ease-in-out; }
+.anim-float { animation: float-up 4s ease-in-out infinite; }
+.anim-glow { animation: glow 1.4s ease-in-out infinite; }
+.anim-chomp { animation: chomp 0.5s ease-in-out; }
+.anim-talk { animation: talk 0.25s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+
+[data-motion="reduce"] *,
+[data-motion="reduce"] *::before,
+[data-motion="reduce"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
