@@ -80,7 +80,7 @@ export const PHRASES = {
   "correct-3": "Super listening!",
   "correct-4": "You got it!",
   "correct-5": "Fantastic!",
-  "correct-6": "Great reading!",
+  "correct-6": "Great job!",
   "retry-1": "Let's try that sound together!",
   "retry-2": "Good try! Listen again.",
   "retry-3": "Nearly! Let's look closely.",

@@ -63,7 +63,10 @@ export function speechEntries(_accent: Accent): SpeechEntry[] {
   for (const c of CORRESPONDENCES) if (c.name) add(K.letterName(c.name), letterNameText(c.name));
   for (const id of Object.keys(PHRASES) as PhraseId[]) add(K.phrase(id), PHRASES[id]);
   for (const p of PHONEMES) add(K.tip(p.id), p.tip);
-  for (const a of ANIMALS) add(K.animal(a.id), a.sound);
+  for (const a of ANIMALS) {
+    add(K.animal(a.id), a.sound);
+    add(K.word(a.label), a.label);
+  }
   for (const l of LEVELS) add(K.levelIntro(l.id), l.intro);
   for (const s of [...L5_SENTENCES, ...L7_SENTENCES]) add(K.sentence(s.id), s.text, true);
   for (const st of STORIES) {

@@ -8,6 +8,8 @@ import { L5_SENTENCES, L7_SENTENCES } from "../src/content/reading";
 import { contentProblems, unreadableWords } from "../src/content/validate";
 import { NONSENSE, WORD_BY_ID, isDecodable } from "../src/content/words";
 import { TRICKY_BY_ID } from "../src/content/tricky";
+import { ANIMALS, FIRST_SOUND_WORDS, SAME_DIFFERENT_WORDS } from "../src/content/level0";
+import { PHONEMES } from "../src/content/phonemes";
 
 const ALL_SENTENCES = [...L5_SENTENCES, ...L7_SENTENCES];
 
@@ -128,6 +130,17 @@ describe("audio", () => {
       expect(missing, "run `npm run audio` to generate missing clips").toEqual([]);
     });
   }
+
+  it("has a clip for every word the listening games and sound check say", () => {
+    const keys = new Set(speechEntries("in").map((e) => e.key));
+    const words = [
+      ...ANIMALS.map((a) => a.label),
+      ...FIRST_SOUND_WORDS,
+      ...SAME_DIFFERENT_WORDS.flat(),
+      ...PHONEMES.map((p) => p.fallback.split(" as in ")[1]),
+    ];
+    expect(words.filter((w) => !keys.has(K.word(w)))).toEqual([]);
+  });
 
   it("has a word clip for every word a lesson can say", () => {
     const keys = new Set(speechEntries("in").map((e) => e.key));

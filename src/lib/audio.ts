@@ -3,7 +3,7 @@ import { PHONEME_BY_ID } from "@/content/phonemes";
 import type { Accent } from "@/content/types";
 import type { Settings } from "./progress";
 import { playSfx, type SfxId } from "./sfx";
-import { fastMode } from "./testHooks";
+import { TEST_HOOKS, fastMode } from "./testHooks";
 
 // One audio engine for the whole app:
 //  - plays curated clips from public/audio/<accent>/<key>.m4a in sequence
@@ -62,8 +62,14 @@ class AudioEngine {
     return !!this.manifest?.clips[this.settings.accent]?.[key];
   }
 
+  /**
+   * The clip's content id is part of the URL, so when a clip is regenerated (a new
+   * voice, say) browsers and the offline cache fetch the new file instead of
+   * replaying the old one.
+   */
   url(key: string, accent: Accent = this.settings.accent) {
-    return `${import.meta.env.BASE_URL}audio/${accent}/${key}.m4a`;
+    const v = this.manifest?.clips[accent]?.[key]?.[1];
+    return `${import.meta.env.BASE_URL}audio/${accent}/${key}.m4a${v ? `?v=${v}` : ""}`;
   }
 
   timings(key: string): number[] | undefined {
@@ -124,6 +130,10 @@ class AudioEngine {
   private async playKey(key: string, my: number, opts: { slow?: boolean; onWord?: (i: number) => void }) {
     const slow = opts.slow ?? this.settings.slow;
     const text = this.captionText(key);
+    if (TEST_HOOKS && !this.has(key)) {
+      const w = window as unknown as { __SOUNDSTEPS_MISSING__?: string[] };
+      (w.__SOUNDSTEPS_MISSING__ ??= []).push(`${this.settings.accent}:${key}`);
+    }
     if (fastMode()) return;
     if (this.settings.muted) {
       await wait(Math.min(1500, 250 + text.length * 25));

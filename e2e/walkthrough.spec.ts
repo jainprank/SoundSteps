@@ -93,6 +93,14 @@ async function playToEnd(page: Page, label: string, errors: string[] = []) {
   throw new Error(`${label}: did not finish`);
 }
 
+async function missingAudio(page: Page): Promise<string[]> {
+  return page.evaluate(() => [...new Set((window as unknown as { __SOUNDSTEPS_MISSING__?: string[] }).__SOUNDSTEPS_MISSING__ ?? [])]);
+}
+
+test.afterEach(async ({ page }) => {
+  expect(await missingAudio(page), "these sounds have no recorded clip, so the device voice would be used").toEqual([]);
+});
+
 test.describe("every lesson can be completed", () => {
   for (const lesson of ALL_LESSONS) {
     test(lesson.id, async ({ page }) => {
@@ -132,4 +140,20 @@ test.describe("games, stories and the daily challenge", () => {
     await playToEnd(page, "daily", errors);
     expect(errors).toEqual([]);
   });
+});
+
+test("'Next lesson' starts the next lesson fresh, all the way through a level", async ({ page }) => {
+  await setup(page);
+  await page.goto("/#/lesson/l0-listen");
+  const seen: string[] = [];
+  for (let n = 0; n < 6; n++) {
+    // the new lesson must show an activity, not the previous lesson's celebration
+    await expect(page.locator("[data-celebration]")).toHaveCount(0);
+    seen.push(page.url().split("/lesson/")[1]);
+    await playToEnd(page, seen[seen.length - 1]);
+    const next = page.getByRole("button", { name: /^(Next lesson|Next level) ▶$/ });
+    if (!(await next.count())) break;
+    await next.click();
+  }
+  expect(seen).toEqual(["l0-listen", "l0-animals", "l0-drum", "l0-first", "l0-twins", "l0-check"]);
 });

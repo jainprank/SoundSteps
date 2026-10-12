@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
+import { useEffect, type ReactElement } from "react";
+import { HashRouter, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { ProgressProvider, useProgress } from "@/lib/progress";
 import { audio } from "@/lib/audio";
 import { Captions } from "@/components/Captions";
@@ -10,6 +10,16 @@ import { LessonPage } from "@/pages/LessonPage";
 import { Daily, GamePage, Games, StoryPage, Stories } from "@/pages/Play";
 import { GrownUps, SoundCheck } from "@/pages/GrownUps";
 import { NotFound } from "@/pages/NotFound";
+
+/**
+ * Moving from one lesson straight to the next keeps the same route, so React would
+ * reuse the screen (and its "finished" state). Keying by id gives every lesson,
+ * game and story a fresh start.
+ */
+function Fresh({ children }: { children: ReactElement }) {
+  const { id = "" } = useParams();
+  return <div key={id}>{children}</div>;
+}
 
 function Shell() {
   useAudioSettings();
@@ -37,11 +47,11 @@ function Shell() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/level/:id" element={<LevelPage />} />
-        <Route path="/lesson/:id" element={<LessonPage />} />
+        <Route path="/lesson/:id" element={<Fresh><LessonPage /></Fresh>} />
         <Route path="/games" element={<Games />} />
-        <Route path="/games/:id" element={<GamePage />} />
+        <Route path="/games/:id" element={<Fresh><GamePage /></Fresh>} />
         <Route path="/stories" element={<Stories />} />
-        <Route path="/stories/:id" element={<StoryPage />} />
+        <Route path="/stories/:id" element={<Fresh><StoryPage /></Fresh>} />
         <Route path="/daily" element={<Daily />} />
         <Route path="/grown-ups" element={<GrownUps />} />
         <Route path="/grown-ups/sounds" element={<SoundCheck />} />
