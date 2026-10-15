@@ -50,7 +50,7 @@ export const VOICES: Record<Accent, VoiceConfig> = {
   in: {
     provider: "fish",
     label: "Priyanka (Fish Audio)",
-    fish: { referenceId: "a82e43a901704f1f82b4e302e9b5e9b2", model: "s2.1-pro-free", speed: 0.9, temperature: 0.5 },
+    fish: { referenceId: "89b7d21062d44e618a49f1a998522532", model: "s2.1-pro-free", speed: 0.9, temperature: 0.5 },
     wordSpeed: 0.85,
     carrierSpeed: 0.8,
     fallback: RISHI,
